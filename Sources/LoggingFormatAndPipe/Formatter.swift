@@ -20,6 +20,8 @@ public enum LogComponent {
     case message
     /// Log metadata
     case metadata
+    /// Log source
+    case source
     /// The log's originating file
     case file
     /// The log's originating function
@@ -39,6 +41,7 @@ public enum LogComponent {
             .level,
             .message,
             .metadata,
+            .source,
             .file,
             .function,
             .line
@@ -62,6 +65,7 @@ public protocol Formatter {
     func processLog(level: Logger.Level,
                     message: Logger.Message,
                     prettyMetadata: String?,
+                    source: String,
                     file: String, function: String, line: UInt) -> String
 
 }
@@ -80,6 +84,7 @@ extension Formatter {
     public func processComponent(_ component: LogComponent, now: Date, level: Logger.Level,
                                   message: Logger.Message,
                                   prettyMetadata: String?,
+                                  source: String,
                                   file: String, function: String, line: UInt) -> String {
         switch component {
         case .timestamp:
@@ -90,6 +95,8 @@ extension Formatter {
             return "\(message)"
         case .metadata:
             return "\(prettyMetadata.map { "\($0)" } ?? "")"
+        case .source:
+            return "\(source)"
         case .file:
             return "\(file)"
         case .function:
@@ -100,7 +107,7 @@ extension Formatter {
             return string
         case .group(let logComponents):
             return logComponents.map({ (component) -> String in
-                self.processComponent(component, now: now, level: level, message: message, prettyMetadata: prettyMetadata, file: file, function: function, line: line)
+                self.processComponent(component, now: now, level: level, message: message, prettyMetadata: prettyMetadata, source: source, file: file, function: function, line: line)
             }).joined()
         }
     }

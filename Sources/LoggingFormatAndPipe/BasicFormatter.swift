@@ -49,11 +49,12 @@ public struct BasicFormatter: Formatter {
     public func processLog(level: Logger.Level,
                            message: Logger.Message,
                            prettyMetadata: String?,
+                           source: String,
                            file: String, function: String, line: UInt) -> String {
         let now = Date()
 
         return self.format.map({ (component) -> String in
-            return self.processComponent(component, now: now, level: level, message: message, prettyMetadata: prettyMetadata, file: file, function: function, line: line)
+            return self.processComponent(component, now: now, level: level, message: message, prettyMetadata: prettyMetadata, source: source, file: file, function: function, line: line)
         }).filter({ (string) -> Bool in
             return string.count > 0
         }).joined(separator: self.separator ?? "")
