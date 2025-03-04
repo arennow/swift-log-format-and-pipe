@@ -12,8 +12,9 @@ import LoggingFormatAndPipe
 final class HandlerTests: XCTestCase {
     func testPiping() {
         let pipe = HistoryPipe()
-        let logger = Logger(label: "testPiping") { _ in
+        let logger = Logger(label: "testPiping") { label in
             return LoggingFormatAndPipe.Handler(
+                label: label,
                 formatter: BasicFormatter(),
                 pipe: pipe
             )

@@ -14,6 +14,8 @@ public enum LogComponent {
     /// Specifying your timestamp format can be done by providing a DateFormatter through `Formatter.timestampFormatter`
     case timestamp
 
+    /// Logger label
+    case label
     /// Log level
     case level
     /// The actual message
@@ -39,6 +41,7 @@ public enum LogComponent {
         return [
             .timestamp,
             .level,
+            .label,
             .message,
             .metadata,
             .source,
@@ -56,6 +59,7 @@ public protocol Formatter {
 
     /// Formatter's chance to format the log
     /// - Parameter level: log level
+    /// - Parameter label: logger label
     /// - Parameter message: actual message
     /// - Parameter prettyMetadata: optional metadata that has already been "prettified"
     /// - Parameter file: log's originating file
@@ -63,6 +67,7 @@ public protocol Formatter {
     /// - Parameter line: log's originating line
     /// - Returns: Result of formatting the log
     func processLog(level: Logger.Level,
+                    label: String,
                     message: Logger.Message,
                     prettyMetadata: String?,
                     source: String,
@@ -82,6 +87,7 @@ extension Formatter {
     /// - Parameter line: log's originating line
     /// - Returns: Result of formatting the component
     public func processComponent(_ component: LogComponent, now: Date, level: Logger.Level,
+                                  label: String,
                                   message: Logger.Message,
                                   prettyMetadata: String?,
                                   source: String,
@@ -89,6 +95,8 @@ extension Formatter {
         switch component {
         case .timestamp:
             return self.timestampFormatter.string(from: now)
+        case .label:
+            return "\(label)"
         case .level:
             return "\(level)"
         case .message:
@@ -107,7 +115,7 @@ extension Formatter {
             return string
         case .group(let logComponents):
             return logComponents.map({ (component) -> String in
-                self.processComponent(component, now: now, level: level, message: message, prettyMetadata: prettyMetadata, source: source, file: file, function: function, line: line)
+                self.processComponent(component, now: now, level: level, label: label, message: message, prettyMetadata: prettyMetadata, source: source, file: file, function: function, line: line)
             }).joined()
         }
     }
