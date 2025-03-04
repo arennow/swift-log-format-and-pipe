@@ -13,8 +13,9 @@ final class FormatterTests: XCTestCase {
     func testFormatter(_ formatter: LoggingFormatAndPipe.Formatter) {
         let pipe = HistoryPipe()
 
-        let logger = Logger(label: "test\(type(of: formatter))") { _ in
+        let logger = Logger(label: "test\(type(of: formatter))") { label in
             return LoggingFormatAndPipe.Handler(
+                label: label,
                 formatter: formatter,
                 pipe: pipe
             )

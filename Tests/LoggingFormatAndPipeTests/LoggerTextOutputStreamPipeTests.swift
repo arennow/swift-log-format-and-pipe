@@ -11,8 +11,9 @@ import LoggingFormatAndPipe
 
 final class LoggerTextOutputStreamPipeTests: XCTestCase {
     func testStdout() {
-        let logger = Logger(label: "testStdout") { _ in
+        let logger = Logger(label: "testStdout") { label in
             return LoggingFormatAndPipe.Handler(
+            label: label,
             formatter: BasicFormatter(),
             pipe: LoggerTextOutputStreamPipe.standardOutput
             )
@@ -26,8 +27,9 @@ final class LoggerTextOutputStreamPipeTests: XCTestCase {
     }
 
     func testStderr() {
-        let logger = Logger(label: "testStderr") { _ in
+        let logger = Logger(label: "testStderr") { label in
             return LoggingFormatAndPipe.Handler(
+                label: label,
                 formatter: BasicFormatter(),
                 pipe: LoggerTextOutputStreamPipe.standardError
             )

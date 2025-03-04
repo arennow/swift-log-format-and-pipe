@@ -40,6 +40,7 @@ public struct BasicFormatter: Formatter {
     /// Our main log formatting method
     /// - Parameters:
     ///   - level: log level
+    ///   - label: logger label
     ///   - message: actual message
     ///   - prettyMetadata: optional metadata that has already been "prettified"
     ///   - file: log's originating file
@@ -47,13 +48,15 @@ public struct BasicFormatter: Formatter {
     ///   - line: log's originating line
     /// - Returns: Result of formatting the log
     public func processLog(level: Logger.Level,
+                           label: String,
                            message: Logger.Message,
                            prettyMetadata: String?,
+                           source: String,
                            file: String, function: String, line: UInt) -> String {
         let now = Date()
 
         return self.format.map({ (component) -> String in
-            return self.processComponent(component, now: now, level: level, message: message, prettyMetadata: prettyMetadata, file: file, function: function, line: line)
+            return self.processComponent(component, now: now, level: level, label: label, message: message, prettyMetadata: prettyMetadata, source: source, file: file, function: function, line: line)
         }).filter({ (string) -> Bool in
             return string.count > 0
         }).joined(separator: self.separator ?? "")

@@ -13,10 +13,14 @@ public struct Handler: LogHandler {
     /// - parameters:
     ///   - formatter: Formatter to format with
     ///   - pipe: PIpe to pipe to
-    public init(formatter: Formatter, pipe: Pipe) {
+    public init(label: String, formatter: Formatter, pipe: Pipe) {
+        self.label = label
         self.formatter = formatter
         self.pipe = pipe
     }
+
+    /// Label of the logger
+    public let label: String
 
     /// Formatter we're formatting with
     public let formatter: Formatter
@@ -31,12 +35,18 @@ public struct Handler: LogHandler {
     public func log(level: Logger.Level,
                     message: Logger.Message,
                     metadata: Logger.Metadata?,
+                    source: String,
                     file: String, function: String, line: UInt) {
         let prettyMetadata = metadata?.isEmpty ?? true
             ? self.prettyMetadata
             : self.prettify(self.metadata.merging(metadata!, uniquingKeysWith: { _, new in new }))
 
-        let formattedMessage = self.formatter.processLog(level: level, message: message, prettyMetadata: prettyMetadata, file: file, function: function, line: line)
+        let formattedMessage = self.formatter.processLog(level: level,
+                                                         label: self.label,
+                                                         message: message,
+                                                         prettyMetadata: prettyMetadata,
+                                                         source: source,
+                                                         file: file, function: function, line: line)
         self.pipe.handle(formattedMessage)
     }
 
